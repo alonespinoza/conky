@@ -57,7 +57,7 @@ function conky_filesystem_display()
 
     return string.format([[
 ${voffset 8}${offset 20}${font Droid Sans:size=16:bold}${color #2E3440}FILESYSTEM${font}${color}
-${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Root (/):${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #5E81AC}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #81A1C1}%s / %s${color}${font}
-${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Home:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #5E81AC}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #81A1C1}%s / %s${color}${font}
+${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Root (/):${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #8FBCBB}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #D8DEE9}%s / %s${color}${font}
+${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Home:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #8FBCBB}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #D8DEE9}%s / %s${color}${font}
 ]], root_perc, root_bar, root_used, root_size, home_perc, home_bar, home_used, home_size)
 end

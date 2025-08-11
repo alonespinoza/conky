@@ -88,8 +88,8 @@ function conky_music_display()
 
     return string.format([[
 ${voffset 20}${offset 20}${font Droid Sans:size=16:bold}${color #2E3440}NOW PLAYING ♪${font}${color}
-${voffset 15}${offset 20}${font Droid Sans:size=14:bold}${color #4C566A}%s${color}${font}
-${voffset 12}${offset 20}${font Droid Sans:size=12}${color #81A1C1}%s${color}${font}
+${voffset 15}${offset 20}${font Droid Sans:size=14:bold}${color #88C0D0}%s${color}${font}
+${voffset 12}${offset 20}${font Droid Sans:size=12}${color #D8DEE9}%s${color}${font}
 ${voffset 15}${offset 20}${font Droid Sans:size=10}${color #5E81AC}%s${color}${font}
 ${voffset 12}${offset 20}${font Droid Sans:size=11}${color #81A1C1}%s / %s${color}${font}
 ${voffset 25}${offset 20}${font Droid Sans:size=9}${color #5E81AC}${color}${font}

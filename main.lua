@@ -19,7 +19,7 @@ conky.config = {
     own_window_type = 'normal',
     own_window_hints = 'undecorated,below,skip_taskbar,skip_pager',
     own_window_argb_visual = true,
-    own_window_argb_value = 255,
+    own_window_argb_value = 192,
 
     -- Position and size
     alignment = 'top_left',

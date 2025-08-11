@@ -48,7 +48,7 @@ function conky_processes_display()
 
     return string.format([[
 ${voffset 8}${offset -10}${font Droid Sans:size=16:bold}${color #2E3440}PROCESSES${font}${color}
-${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Top CPU:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%.1f%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #5E81AC}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #81A1C1}%s${color}${font}
-${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Top RAM:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%.1f%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #5E81AC}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #81A1C1}%s${color}${font}
+${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Top CPU:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%.1f%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #8FBCBB}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #D8DEE9}%s${color}${font}
+${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Top RAM:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%.1f%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #8FBCBB}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #D8DEE9}%s${color}${font}
 ]], cpu_usage, cpu_bar, cpu_name, mem_usage, mem_bar, mem_name)
 end

@@ -43,10 +43,10 @@ function conky_network_display()
 
     return string.format([[
 ${voffset 8}${offset 20}${font Droid Sans:size=16:bold}${color #2E3440}NETWORK${font}${color}
-${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Upload:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%s${color}${font}${goto 220}${font Droid Sans:size=9}${color #81A1C1}%s${color}${font}
-${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Download:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%s${color}${font}${goto 220}${font Droid Sans:size=9}${color #81A1C1}%s${color}${font}
-${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Wireless:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%s${color}${font}
-${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Ethernet:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%s${color}${font}
-${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Public IP:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%s${color}${font}
+${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Upload:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%s${color}${font}${goto 220}${font Droid Sans:size=9}${color #D8DEE9}%s${color}${font}
+${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Download:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%s${color}${font}${goto 220}${font Droid Sans:size=9}${color #D8DEE9}%s${color}${font}
+${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Wireless:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%s${color}${font}
+${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Ethernet:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%s${color}${font}
+${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Public IP:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%s${color}${font}
 ]], up_speed, total_up, down_speed, total_down, wifi_addr, eth_addr, public_ip)
 end

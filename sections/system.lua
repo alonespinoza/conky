@@ -250,12 +250,12 @@ function conky_system_display()
 
     return string.format([[
 ${voffset 10}${offset 20}${font Droid Sans:size=16:bold}${color #2E3440}SYSTEM${font}${color}
-${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Kernel:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%s${color}${font}
-${voffset 3}${offset 20}${font Droid Sans:size=11}${color #3B4252}CPU:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #5E81AC}%s${color}${font}
-${voffset 3}${offset 20}${font Droid Sans:size=11}${color #3B4252}RAM:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #5E81AC}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #81A1C1}%s/%s${color}${font}
-${voffset 3}${offset 20}${font Droid Sans:size=11}${color #3B4252}SWAP:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #5E81AC}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #81A1C1}%s/%s${color}${font}
-${voffset 3}${offset 20}${font Droid Sans:size=11}${color #3B4252}Uptime:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%s${color}${font}
-${voffset 3}${offset 20}${font Droid Sans:size=11}${color #3B4252}Battery:${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #5E81AC}%s${color}${font}
+${voffset 8}${offset 20}${font Droid Sans:size=11}${color #3B4252}Kernel:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%s${color}${font}
+${voffset 3}${offset 20}${font Droid Sans:size=11}${color #3B4252}CPU:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #8FBCBB}%s${color}${font}
+${voffset 3}${offset 20}${font Droid Sans:size=11}${color #3B4252}RAM:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #8FBCBB}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #D8DEE9}%s/%s${color}${font}
+${voffset 3}${offset 20}${font Droid Sans:size=11}${color #3B4252}SWAP:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #8FBCBB}%s${color}${font}${goto 320}${font Droid Sans:size=9}${color #D8DEE9}%s/%s${color}${font}
+${voffset 3}${offset 20}${font Droid Sans:size=11}${color #3B4252}Uptime:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%s${color}${font}
+${voffset 3}${offset 20}${font Droid Sans:size=11}${color #3B4252}Battery:${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%d%%${color}${font}${goto 220}${font Droid Sans:size=9}${color #8FBCBB}%s${color}${font}
 ]], kernel, cpu_usage, cpu_bar, mem_perc, mem_bar, mem_used, mem_total,
         swap_perc, swap_bar, swap_used, swap_total, uptime, battery, battery_bar)
 end
