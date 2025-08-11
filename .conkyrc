@@ -1,0 +1,5 @@
+-- Delegate to main.lua for config and text
+-- This keeps .conkyrc minimal and uses the modular setup in main.lua
+
+local home = os.getenv('HOME') or '/home/alonso'
+dofile(home .. '/.conky/main.lua')
