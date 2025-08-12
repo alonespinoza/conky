@@ -1,4 +1,4 @@
--- ~/.conky/main.lua
+-- ~/.conky/main_bars.lua
 -- Main Conky configuration file
 
 -- Get home directory
@@ -9,10 +9,6 @@ conky.config = {
     -- Basic settings
     update_interval = 1,
     total_run_times = 0,
-
-
-
-
 
     -- Window settings
     own_window = true,
@@ -38,16 +34,9 @@ conky.config = {
     no_buffers = true,
     text_buffer_size = 2048,
 
-
-
-
-
     -- Fonts and colors
     use_xft = true,
     font = 'Droid Sans:size=10',
-
-    -- Cairo drawing hook for system widget (disabled - trying alternative approach)
-    -- lua_draw_hook_pre = 'conky_draw_system',
 
     -- Lua settings - load all sections in one statement
     lua_load = home .. '/.conky/sections_bars/common_draw.lua ' ..
