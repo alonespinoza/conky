@@ -1,4 +1,4 @@
--- ~/.conky/main_bars.lua
+-- ~/.conky/main.lua
 -- Main Conky configuration file
 
 -- Get home directory
@@ -6,47 +6,58 @@ local home = os.getenv('HOME') or '/home/alonso'
 
 -- Main Conky configuration
 conky.config = {
-    -- Basic settings
-    update_interval = 1,
-    total_run_times = 0,
+        -- Basic settings
+        update_interval = 1,
+        total_run_times = 0,
 
-    -- Window settings
-    own_window = true,
-    own_window_type = 'normal',
-    own_window_hints = 'undecorated,below,skip_taskbar,skip_pager',
-    own_window_argb_visual = true,
-    own_window_argb_value = 192,
 
-    -- Position and size
-    alignment = 'top_left',
-    gap_x = 0,
-    gap_y = 0,
 
-    -- Appearance
-    background = false,
-    border_width = 0,
-    draw_shades = false,
-    draw_outline = false,
-    draw_borders = false,
 
-    -- Anti-flicker settings
-    double_buffer = true,
-    no_buffers = true,
-    text_buffer_size = 2048,
 
-    -- Fonts and colors
-    use_xft = true,
-    font = 'Droid Sans:size=10',
+        -- Window settings
+        own_window = true,
+        own_window_type = 'normal',
+        own_window_hints = 'undecorated,below,skip_taskbar,skip_pager',
+        own_window_argb_visual = true,
+        own_window_argb_value = 192,
 
-    -- Lua settings - load all sections in one statement
-    lua_load = home .. '/.conky/sections_bars/common_draw.lua ' ..
-        home .. '/.conky/sections_bars/temperature.lua ' ..
-        home .. '/.conky/sections_bars/network.lua ' ..
-        home .. '/.conky/sections_bars/filesystem.lua ' ..
-        home .. '/.conky/sections_bars/system.lua ' ..
-        home .. '/.conky/sections_bars/weather.lua ' ..
-        home .. '/.conky/sections_bars/music.lua ' ..
-        home .. '/.conky/sections_bars/processes.lua',
+        -- Position and size
+        alignment = 'top_left',
+        gap_x = 0,
+        gap_y = 0,
+
+        -- Appearance
+        background = false,
+        border_width = 0,
+        draw_shades = false,
+        draw_outline = false,
+        draw_borders = false,
+
+        -- Anti-flicker settings
+        double_buffer = true,
+        no_buffers = true,
+        text_buffer_size = 2048,
+
+
+
+
+
+        -- Fonts and colors
+        use_xft = true,
+        font = 'Droid Sans:size=10',
+
+        -- Cairo drawing hook for system widget (disabled - trying alternative approach)
+        -- lua_draw_hook_pre = 'conky_draw_system',
+
+        -- Lua settings - load all sections in one statement
+        lua_load = home .. '/.conky/sections_bars/common_draw.lua ' ..
+            home .. '/.conky/sections_bars/temperature.lua ' ..
+            home .. '/.conky/sections_bars/network.lua ' ..
+            home .. '/.conky/sections_bars/filesystem.lua ' ..
+            home .. '/.conky/sections_bars/system.lua ' ..
+            home .. '/.conky/sections_bars/weather.lua ' ..
+            home .. '/.conky/sections_bars/music.lua ' ..
+            home .. '/.conky/sections_bars/processes.lua',
 }
 
 -- Main text display with different update intervals
