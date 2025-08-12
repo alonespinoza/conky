@@ -1,205 +1,264 @@
-# 🎨 Conky Desktop Widgets
+# Conky Configuration - Dual Version System
 
-A beautiful, modular Conky configuration featuring multiple widgets with Nord color scheme, anti-flicker settings, and smart update intervals.
+A comprehensive Conky desktop widget configuration with two distinct versions: **Conky Bars** (fully functional) and **New Version** (clean slate for development).
 
-## ✨ Features
+## 🌟 Features
 
-- **🎵 Music Widget**: Real-time music player information with progress bars
-- **💻 System Widget**: CPU, RAM, SWAP, uptime, and battery monitoring
-- **💾 Filesystem Widget**: Disk usage for root and home directories
-- **🔄 Processes Widget**: Top CPU and RAM processes with usage bars
-- **🌐 Network Widget**: Upload/download speeds and total data usage
-- **🌤️ Weather Widget**: Real-time weather for Heredia, Costa Rica
-- **🎨 Nord Color Scheme**: Beautiful, consistent color palette
-- **⚡ Smart Updates**: Anti-flicker with double buffering
-- **🔧 Modular Design**: Easy to customize and extend
+### Conky Bars Version (Production Ready)
+- **System Widget**: CPU, RAM, SWAP, Uptime, Battery with progress bars
+- **Filesystem Widget**: Disk usage for root and home directories
+- **Processes Widget**: Top CPU and RAM consuming processes
+- **Network Widget**: Upload/download speeds, IP addresses
+- **Weather Widget**: Auto-updating weather with location detection
+- **Music Widget**: Smart music player display (auto-hides when not playing)
+
+### New Version (Development)
+- **Clean slate** for new designs and approaches
+- **Modular structure** ready for custom widgets
+- **Placeholder widgets** for system, weather, and music
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- **Conky**: Version 1.12.2 or higher
-- **Lua**: Built-in with Conky
-- **playerctl**: For music widget functionality
-- **curl & jq**: For weather data fetching
-
-### Installation
-
-1. **Clone or download** this configuration to `~/.conky/`
-2. **Install dependencies**:
-   ```bash
-   sudo apt install playerctl curl jq
-   ```
-3. **Start Conky**:
-   ```bash
-   conky -c ~/.conky/main.lua
-   ```
-
-### Auto-start
-
-Add to your startup applications:
+### Option 1: Interactive Startup (Recommended)
 ```bash
-conky -c ~/.conky/main.lua &
+cd ~/.conky
+./start_conky.sh
+```
+Then choose:
+- **1** - Start Conky Bars (working version)
+- **2** - Start New Version (development)
+- **3** - Stop all Conky instances
+- **4** - Exit
+
+### Option 2: Direct Launch
+```bash
+# Conky Bars version
+conky -c ~/.conky/main_bars.lua
+
+# New version
+conky -c ~/.conky/main.lua
 ```
 
 ## 📁 File Structure
 
 ```
 ~/.conky/
-├── .conkyrc                 # Main Conky entry point
-├── main.lua                 # Core configuration and widget loading
-├── get_weather_heredia.sh  # Weather data fetcher
-├── sections/                # Widget modules
-│   ├── common_draw.lua     # Shared drawing utilities
-│   ├── system.lua          # System information widget
-│   ├── filesystem.lua      # Disk usage widget
-│   ├── processes.lua       # Process monitoring widget
-│   ├── network.lua         # Network statistics widget
-│   ├── weather.lua         # Weather display widget
-│   ├── music.lua           # Music player widget
-│   └── temperature.lua     # Temperature monitoring widget
-├── images/                  # Widget images and logos
-│   └── pop_os.png         # System logo
-└── weather/                 # Weather icons and data
-    └── icons/              # Weather condition icons
-        ├── sunny.png
-        ├── cloudy.png
-        ├── rain.png
-        └── thunderstorm.png
+├── main_bars.lua              # Conky Bars configuration
+├── main.lua                   # New version configuration
+├── sections_bars/             # Working widgets (Conky Bars)
+│   ├── system.lua            # System information
+│   ├── filesystem.lua        # Disk usage
+│   ├── processes.lua         # Process monitoring
+│   ├── network.lua           # Network statistics
+│   ├── weather.lua           # Auto-updating weather
+│   ├── music.lua             # Music player widget
+│   └── common_draw.lua       # Shared functions
+├── sections/                  # New version widgets
+│   ├── common.lua            # Basic helper functions
+│   ├── system.lua            # Placeholder
+│   ├── weather.lua           # Placeholder
+│   └── music.lua             # Placeholder
+├── weather/                   # Weather resources
+│   └── icons/                # Weather condition icons
+├── images/                    # General images
+├── start_conky.sh            # Version selector script
+├── update_weather.sh         # Manual weather update
+├── get_weather_*.sh          # Weather location scripts
+└── README.md                 # This file
 ```
 
-## 🎯 Widget Details
+## 🎨 Design Features
 
-### 🎵 Music Widget
-- **Real-time progress bars** for current track
-- **Smart updates**: Only refreshes changing elements
-- **Playerctl integration** for universal music player support
-- **Beautiful formatting** with track title and artist
+### Color Scheme
+- **Nord Color Palette**: Modern, easy-on-the-eyes design
+- **Consistent theming**: All widgets follow the same color scheme
+- **High contrast**: Optimized for readability
 
-### 💻 System Widget
-- **CPU usage** with visual progress bars
-- **Memory monitoring** (RAM & SWAP) with used/total display
-- **System uptime** and battery percentage
-- **Kernel information** display
+### Layout
+- **Column-based alignment**: Clean, organized information display
+- **Progress bars**: Visual representation of system metrics
+- **Smart spacing**: Optimized vertical and horizontal spacing
 
-### 💾 Filesystem Widget
-- **Root (/) and Home (/home)** directory monitoring
-- **Usage percentages** with visual progress bars
-- **Used/Total space** display
-- **Compact layout** for efficient space usage
+## 🔧 Configuration
 
-### 🔄 Processes Widget
-- **Top CPU process** with usage percentage
-- **Top RAM process** with memory usage
-- **Process name truncation** for clean display
-- **Visual progress bars** for easy monitoring
-
-### 🌐 Network Widget
-- **Real-time upload/download** speeds
-- **Total data usage** tracking
-- **Clean, compact** display format
-- **Nord color scheme** consistency
-
-### 🌤️ Weather Widget
-- **Heredia, Costa Rica** weather data
-- **OpenWeatherMap API** integration
-- **Weather condition icons** for visual appeal
-- **Temperature and condition** display
-
-## 🎨 Customization
-
-### Colors
-The configuration uses the Nord color scheme:
-- **Primary**: `#2E3440` (Dark blue)
-- **Secondary**: `#3B4252` (Medium blue)
-- **Accent**: `#4C566A` (Light blue)
-- **Highlight**: `#5E81AC` (Bright blue)
-- **Text**: `#81A1C1` (Light text)
-
-### Fonts
-- **Main Font**: Droid Sans (size 10)
-- **Headers**: Droid Sans Bold (size 16)
-- **Widgets**: Droid Sans (size 11-14)
-
-### Positioning
-- **Alignment**: Top-left corner
-- **Gaps**: 0px (no margins)
-- **Window Type**: Normal, undecorated
-
-## ⚙️ Configuration
-
-### Update Intervals
-- **Main Interval**: 1 second for responsive updates
-- **Smart Updates**: Only changing elements refresh
+### Conky Bars Version
+- **Position**: Top-left corner
+- **Transparency**: 25% (75% opaque)
+- **Update interval**: 1 second
 - **Anti-flicker**: Double buffering enabled
 
-### Performance Settings
-- **Double Buffer**: `true` (prevents flickering)
-- **No Buffers**: `true` (improves performance)
-- **Text Buffer Size**: 2048 bytes
+### New Version
+- **Position**: Top-right corner
+- **Transparency**: 25% (75% opaque)
+- **Update interval**: 1 second
+- **Clean slate**: Ready for custom configuration
 
-### Window Settings
-- **Own Window**: `true`
-- **Window Type**: `normal`
-- **ARGB Visual**: `true` (transparency support)
-- **Below**: Always on top of desktop
+## 🌤️ Weather System
 
-## 🔧 Troubleshooting
+### Automatic Features
+- **Location detection**: Multiple IP geolocation services
+- **Auto-updates**: Every 15-30 minutes
+- **Fallback support**: Multiple service providers
+- **Icon mapping**: Weather condition to icon files
+
+### Manual Control
+- **Location override**: Set custom coordinates
+- **City search**: Find any city by name
+- **Browser geolocation**: Most accurate method
+
+## 🎵 Music Widget
+
+### Smart Display
+- **Auto-hide**: Only shows when music is playing
+- **Player support**: Works with any MPRIS-compatible player
+- **Progress tracking**: Real-time playback progress
+- **Metadata display**: Title, artist, duration
+
+### Supported Players
+- Spotify
+- VLC
+- Rhythmbox
+- Any MPRIS-compatible player
+
+## 🛠️ Customization
+
+### Adding New Widgets
+1. Create new Lua file in `sections/`
+2. Define `conky_widgetname_display()` function
+3. Add to `main.lua` lua_load and conky.text
+4. Restart Conky
+
+### Modifying Colors
+- Edit color values in widget files
+- Use Nord color palette for consistency
+- Test changes with Conky restart
+
+### Adjusting Layout
+- Modify `voffset` and `offset` values
+- Use `goto` for precise positioning
+- Test different alignments
+
+## 🔍 Troubleshooting
 
 ### Common Issues
 
-1. **Music not displaying**:
-   - Ensure `playerctl` is installed
-   - Check if a music player is running
-
-2. **Weather not updating**:
-   - Verify internet connection
-   - Check API key in `get_weather_heredia.sh`
-
-3. **Widgets not aligned**:
-   - Check font installation
-   - Verify Conky version compatibility
-
-4. **Performance issues**:
-   - Reduce update interval if needed
-   - Check system resources
-
-### Debug Mode
-Run with debug output:
+#### Weather Not Updating
 ```bash
-conky -c ~/.conky/main.lua --debug
+# Check weather data
+cat /tmp/conky_weather.txt
+
+# Manual update
+./update_weather.sh
+
+# Check location config
+cat ~/.conky/weather_location.conf
 ```
 
-## 📝 Dependencies
+#### Music Widget Not Showing
+```bash
+# Check player status
+playerctl status
 
-| Package | Purpose | Installation |
-|---------|---------|---------------|
-| `conky` | Main application | `sudo apt install conky` |
-| `playerctl` | Music control | `sudo apt install playerctl` |
-| `curl` | HTTP requests | `sudo apt install curl` |
-| `jq` | JSON parsing | `sudo apt install jq` |
+# Check if any player is active
+playerctl --list-all
+```
 
-## 🌟 Contributing
+#### Conky Not Starting
+```bash
+# Check for errors
+conky -c main.lua
 
-Feel free to:
-- **Report issues** with specific error messages
-- **Suggest improvements** for widgets or layout
-- **Share customizations** you've made
-- **Contribute new widgets** or themes
+# Kill existing instances
+pkill conky
+
+# Check file permissions
+ls -la *.lua
+```
+
+### Debug Mode
+- Check Conky output for error messages
+- Verify Lua script syntax
+- Test individual widgets
+
+## 📦 Dependencies
+
+### Required Packages
+- **conky**: Main application
+- **curl**: Weather API requests
+- **jq**: JSON parsing
+- **playerctl**: Music player control
+
+### Installation (Ubuntu/Debian)
+```bash
+sudo apt install conky curl jq playerctl
+```
+
+### Installation (Arch)
+```bash
+sudo pacman -S conky curl jq playerctl
+```
+
+## 🚀 Development
+
+### Working with New Version
+1. **Start development**: `./start_conky.sh` → Option 2
+2. **Edit widgets**: Modify files in `sections/`
+3. **Test changes**: Conky auto-reloads on file changes
+4. **Compare versions**: Switch between bars and new version
+
+### Version Control
+- **Branch**: `conky-version2`
+- **Previous**: `conky-config` (Conky Bars)
+- **Main**: `main` (base)
+
+### Contributing
+1. Fork the repository
+2. Create feature branch
+3. Make changes
+4. Test thoroughly
+5. Submit pull request
+
+## 📝 Changelog
+
+### Latest Updates
+- **Dual version system**: Conky Bars + New Version
+- **Smart startup script**: Choose which version to run
+- **Enhanced weather**: Multiple location services
+- **Music widget**: Auto-hide when not playing
+- **Repository cleanup**: Organized file structure
+
+### Previous Versions
+- **v1.0**: Basic Conky configuration
+- **v2.0**: Widget system implementation
+- **v3.0**: Weather and music integration
+- **v4.0**: Dual version system
 
 ## 📄 License
 
-This configuration is provided as-is for personal use. Feel free to modify and distribute according to your needs.
+This project is open source and available under the MIT License.
 
 ## 🙏 Acknowledgments
 
-- **Nord Color Scheme** for the beautiful color palette
-- **Conky Community** for the excellent desktop widget system
-- **OpenWeatherMap** for weather data API
-- **Playerctl** for universal music player support
+- **Nord Color Scheme**: Beautiful color palette
+- **OpenWeatherMap**: Weather data API
+- **Conky Community**: Excellent documentation and examples
+- **Linux Community**: Continuous improvements and support
+
+## 📞 Support
+
+### Getting Help
+- **GitHub Issues**: Report bugs and request features
+- **Documentation**: Check this README first
+- **Community**: Linux and Conky forums
+
+### Reporting Issues
+When reporting issues, please include:
+- Conky version
+- Operating system
+- Error messages
+- Steps to reproduce
+- Expected vs. actual behavior
 
 ---
 
-**Happy Conky-ing! 🎉**
-
-*Your desktop will never look the same again.*
+**Happy Conky-ing!** 🎉
