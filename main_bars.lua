@@ -50,14 +50,14 @@ conky.config = {
     -- lua_draw_hook_pre = 'conky_draw_system',
 
     -- Lua settings - load all sections in one statement
-    lua_load = home .. '/.conky/sections/common_draw.lua ' ..
-        home .. '/.conky/sections/temperature.lua ' ..
-        home .. '/.conky/sections/network.lua ' ..
-        home .. '/.conky/sections/filesystem.lua ' ..
-        home .. '/.conky/sections/system.lua ' ..
-        home .. '/.conky/sections/weather.lua ' ..
-        home .. '/.conky/sections/music.lua ' ..
-        home .. '/.conky/sections/processes.lua',
+    lua_load = home .. '/.conky/sections_bars/common_draw.lua ' ..
+        home .. '/.conky/sections_bars/temperature.lua ' ..
+        home .. '/.conky/sections_bars/network.lua ' ..
+        home .. '/.conky/sections_bars/filesystem.lua ' ..
+        home .. '/.conky/sections_bars/system.lua ' ..
+        home .. '/.conky/sections_bars/weather.lua ' ..
+        home .. '/.conky/sections_bars/music.lua ' ..
+        home .. '/.conky/sections_bars/processes.lua',
 }
 
 -- Main text display with different update intervals
