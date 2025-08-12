@@ -12,6 +12,12 @@ end
 
 -- Get music information using playerctl
 local function get_music_info()
+    -- Check if any player is active
+    local status = read_cmd("playerctl status 2>/dev/null")
+    if status ~= "Playing" then
+        return nil, nil, 0, "0:00", "0:00"
+    end
+
     local title = read_cmd("playerctl metadata title") or "No track"
     local artist = read_cmd("playerctl metadata artist") or "No artist"
     local position = read_cmd("playerctl position") or "0"
@@ -76,6 +82,11 @@ local last_artist = ""
 function conky_music_display()
     -- Get music information
     local title, artist, progress, pos_time, len_time = get_music_info()
+
+    -- If no music is playing, return empty string (widget won't display)
+    if not title or not artist then
+        return ""
+    end
 
     -- Only update title/artist if they changed (reduces flickering)
     if title ~= last_title or artist ~= last_artist then
