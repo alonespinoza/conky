@@ -203,7 +203,8 @@ function conky_weather_display()
 
     return string.format([[
 ${voffset 20}${offset 20}${font Droid Sans:size=16:bold}${color #2E3440}WEATHER${font}${color}
-${voffset 15}${offset 20}${font Droid Sans:size=11}${color #3B4252}%s${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}${color}${font}${image ./weather/icons/%s -p 175,635 -s 24x24}
-${voffset 15}${offset 20}${font Droid Sans:size=11}${color #3B4252}%s${color}${goto 150}
+${voffset 15}${offset 20}${font Droid Sans:size=11}${color #3B4252}%s${color}${goto 150}${font Droid Sans:size=11}${color #4C566A}${color}${font}${image ~/.conky/weather/icons/%s -p 175,635 -s 24x24}
+${voffset 15}${offset 20}${font Droid Sans:size=11}${color #3B4252}%s${color}${goto 150}${font Droid Sans:size=11}${color #88C0D0}%s${color}${font}
+${voffset 25}${offset 20}${font Droid Sans:size=9}${color #5E81AC}${color}${font}
 ]], current_condition, current_icon, current_location)
 end
