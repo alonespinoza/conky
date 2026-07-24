@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Default-route interface stats for the eww HUD:
+#   - current up/down rate strings
+#   - rolling history as bar pixel-heights for the mirrored spectrum
+# Heights use a LOG scale against a fixed ceiling so levels are stable and
+# meaningful (idle ~2px, ~1 MB/s ~15px, >=25 MB/s full) instead of a jumpy
+# rolling-max normalization. LC_NUMERIC=C keeps awk decimals JSON-valid.
+export LC_NUMERIC=C
+N=40          # history length (bars per direction)
+MAXH=22       # max bar pixel height per half
+CEIL=25000    # KB/s that maps to a full-height bar (25 MB/s)
+
+iface=$(ip route show default 2>/dev/null | awk '/^default/{print $5; exit}')
+
+# JSON list body of N twos (idle baseline)
+base(){ awk -v n="$N" 'BEGIN{s="";for(i=0;i<n;i++)s=s (i?",":"") "2"; print s}'; }
+
+if [ -z "$iface" ]; then
+  z=$(base)
+  printf '{"iface":"—","ssid":"","sig":0,"up":"0","uu":" KB/s","down":"0","du":" KB/s","up_hist":[%s],"dn_hist":[%s]}' "$z" "$z"
+  exit 0
+fi
+
+state="/tmp/eww_net_${iface}"
+read -r rx tx < <(awk -v i="${iface}:" '$1==i{print $2, $10}' /proc/net/dev)
+now=$(date +%s.%N)
+if [ -f "$state" ]; then read -r prx ptx pt < "$state"; else prx=$rx; ptx=$tx; pt=$now; fi
+echo "$rx $tx $now" > "$state"
+dt=$(awk -v a="$now" -v b="$pt" 'BEGIN{d=a-b; print (d<=0)?1:d}')
+dkb=$(awk -v a="$rx" -v b="$prx" -v t="$dt" 'BEGIN{v=(a-b)/1024/t; printf "%d", (v<0)?0:v}')
+ukb=$(awk -v a="$tx" -v b="$ptx" -v t="$dt" 'BEGIN{v=(a-b)/1024/t; printf "%d", (v<0)?0:v}')
+
+# rolling history files (space-separated, oldest..newest, trimmed to N)
+uh="/tmp/eww_net_uh_${iface}"; dh="/tmp/eww_net_dh_${iface}"
+push(){ f=$1; val=$2; prev=$(cat "$f" 2>/dev/null);   # read BEFORE truncating $f
+  printf '%s %s' "$prev" "$val" \
+    | awk -v n="$N" '{start=(NF>n)?NF-n+1:1; s=""; for(i=start;i<=NF;i++)s=s (s==""?"":" ") $i; print s}' > "$f"; }
+push "$uh" "$ukb"; push "$dh" "$dkb"
+
+# -> JSON array of N pixel heights on a fixed log scale; left-padded with the
+#    idle baseline so the newest sample stays on the right.
+heights(){ awk -v n="$N" -v mh="$MAXH" -v ceil="$CEIL" '{
+  lc=log(1+ceil); s=""; pad=n-NF;
+  for(i=0;i<pad;i++) s=s (s==""?"":",") "2";
+  for(i=1;i<=NF;i++){ v=$i; h=int(mh*log(1+v)/lc + 0.5); if(h<2)h=2; if(h>mh)h=mh; s=s (s==""?"":",") h; }
+  print s
+}' "$1"; }
+UARR=$(heights "$uh"); DARR=$(heights "$dh")
+
+fmt(){ awk -v k="$1" 'BEGIN{ if(k>=1024) printf "%.1f\t MB/s", k/1024; else printf "%d\t KB/s", k }'; }
+IFS=$'\t' read -r dv du < <(fmt "$dkb")
+IFS=$'\t' read -r uv uu < <(fmt "$ukb")
+
+# WiFi SSID + signal (%) for the default-route interface. Cached ~10s because
+# the HUD polls this script every 1s and an nmcli query each tick is wasteful;
+# --rescan no keeps it to the last scan (no radio scan, no stall). Empty ssid
+# when the active route is wired. Match on device so the right adapter wins
+# when more than one WiFi interface is connected.
+ssid=""; sig=0
+wcache="/tmp/eww_net_wifi_${iface}"
+if [ -f "$wcache" ] && [ $(( $(date +%s) - $(stat -c %Y "$wcache" 2>/dev/null || echo 0) )) -lt 10 ]; then
+  IFS='|' read -r ssid sig < "$wcache"
+else
+  wline=$(nmcli -t -f active,ssid,signal,device device wifi list --rescan no 2>/dev/null \
+    | awk -F: -v i="$iface" '$1=="yes" && $4==i{print $2"|"$3; exit}')
+  ssid="${wline%%|*}"
+  sig="${wline#*|}"
+  case "$sig" in ''|*[!0-9]*) sig=0 ;; esac
+  printf '%s|%s' "$ssid" "$sig" > "$wcache"
+fi
+[ -z "$sig" ] && sig=0
+# JSON-escape backslash and double-quote in the SSID
+ssid_json=$(printf '%s' "$ssid" | sed 's/\\/\\\\/g; s/"/\\"/g')
+
+printf '{"iface":"%s","ssid":"%s","sig":%s,"down":"%s","du":"%s","up":"%s","uu":"%s","up_hist":[%s],"dn_hist":[%s]}' \
+  "$iface" "$ssid_json" "$sig" "$dv" "$du" "$uv" "$uu" "$UARR" "$DARR"

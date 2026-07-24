@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+awk '{s=int($1); d=int(s/86400); h=int((s%86400)/3600); m=int((s%3600)/60);
+      if(d>0) printf "%dd %dh", d, h; else printf "%dh %dm", h, m}' /proc/uptime

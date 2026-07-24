@@ -1,0 +1,155 @@
+$fg:    #e9f1f6;
+$muted: #74828f;
+$aqua:  #5fd3c4;
+$steel: #9db4c0;
+$amber: #e8b23a;
+$track: rgba(255,255,255,0.10);
+
+* { font-family: "Fira Sans", sans-serif; }
+/* transparent card: widgets float directly on the wallpaper. A text shadow
+   keeps every label legible over bright wallpaper regions. */
+label { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85); }
+
+/* force the whole eww window transparent (some GTK themes paint a window bg) */
+window, .background { background-color: transparent; }
+
+.card {
+  background-color: transparent;
+  padding: 20px 22px;
+}
+
+/* header (clock + weather share one grammar: big hero value + muted meta line) */
+.clock  { font-family: "Fira Mono", monospace; font-size: 42px; color: $fg; }
+.sec    { font-family: "Fira Mono", monospace; font-size: 18px; color: $aqua; }
+.ampm   { font-family: "Fira Mono", monospace; font-size: 15px; font-weight: 600;
+          color: $aqua; letter-spacing: 0.08em; }
+.deg    { font-family: "Fira Mono", monospace; font-size: 30px; font-weight: 600; color: $fg; }
+.wicon  { font-family: "Noto Sans Symbols2", "Noto Sans Symbols"; font-size: 23px; color: $aqua; }
+.meta   { font-size: 12px; color: $muted; letter-spacing: 0.05em; }
+
+/* 3-day forecast strip (glyph + hi/lo per day, shares the weather grammar) */
+.forecast { margin: 2px 0; }
+.fc-day { font-size: 10px; color: $muted; letter-spacing: 0.06em; }
+.fc-ic  { font-family: "Noto Sans Symbols2", "Noto Sans Symbols";
+          font-size: 19px; color: $aqua; margin: 1px 0; }
+.fc-hi  { font-family: "Fira Mono", monospace; font-size: 12px; color: $fg; }
+.fc-lo  { font-family: "Fira Mono", monospace; font-size: 12px; color: $muted; }
+
+/* rings */
+.ring-slot { min-width: 78px; min-height: 78px; }
+.ring {
+  min-width: 78px; min-height: 78px;
+  background-color: $track;         /* unfilled track */
+  /* arc color set inline per-ring */
+}
+.ringnum { font-family: "Fira Mono", monospace; font-size: 19px; color: $fg; }
+.lbl     { font-size: 11px; color: $muted; letter-spacing: 0.08em; }
+
+/* section labels */
+.sec-lbl { font-size: 11px; color: $muted; letter-spacing: 0.08em; }
+.sec-val { font-family: "Fira Mono", monospace; font-size: 12px; color: $muted; }
+
+/* network - mirrored spectrum */
+.arrow    { font-size: 15px; }
+.arrow.up { color: $aqua; }
+.arrow.dn { color: $steel; }
+.rate  { font-family: "Fira Mono", monospace; font-size: 14px; color: $fg; }
+.unit  { font-size: 11px; color: $muted; }
+.spec-top, .spec-bot { min-height: 22px; }
+.spec-mid { min-height: 2px; background-color: rgba(157, 180, 192, 0.10);
+            margin: 2px 0; border-radius: 1px; }
+.sb-up { background-color: $aqua; border-radius: 2px 2px 0 0; }
+.sb-dn { background-color: $steel; border-radius: 0 0 2px 2px; }
+.sb-head-up { background-color: $fg;
+              box-shadow: 0 0 5px 1px rgba(95, 211, 196, 0.95),
+                          0 0 10px 3px rgba(95, 211, 196, 0.4); }
+.sb-head-dn { background-color: $fg;
+              box-shadow: 0 0 5px 1px rgba(157, 180, 192, 0.95),
+                          0 0 10px 3px rgba(157, 180, 192, 0.4); }
+.netrates { margin-top: 4px; }
+
+/* disks - capacity bars */
+.dname  { font-family: "Fira Mono", monospace; font-size: 13px; color: $fg; min-width: 14px; }
+.dlabel { font-size: 11px; color: $muted; }
+.dpct   { font-family: "Fira Mono", monospace; font-size: 13px; color: $fg; }
+.dmeter trough {
+  min-height: 10px; border-radius: 6px; background-color: $track;
+}
+.dmeter progress {
+  min-height: 10px; border-radius: 6px;
+  background-image: linear-gradient(to right, #4bbcae, $aqua);
+  box-shadow: 0 0 8px rgba(95, 211, 196, 0.45);
+}
+.dfree  { font-family: "Fira Mono", monospace; font-size: 10.5px; color: $muted; margin-top: 1px; }
+
+/* audio - volume + mic meters (glowing fill, amber when muted) */
+.audio { margin-top: 2px; }
+.arow  { font-family: "Fira Mono", monospace; font-size: 11px; color: $muted;
+         letter-spacing: 0.08em; min-width: 30px; }
+.aval  { font-family: "Fira Mono", monospace; font-size: 11px; color: $fg; min-width: 44px; }
+.ameter trough { min-height: 8px; border-radius: 5px; background-color: $track; }
+.ameter progress {
+  min-height: 8px; border-radius: 5px;
+  background-image: linear-gradient(to right, #4bbcae, $aqua);
+  box-shadow: 0 0 8px rgba(95, 211, 196, 0.45);
+}
+.ameter.mic progress {
+  background-image: linear-gradient(to right, #7f93a0, $steel);
+  box-shadow: 0 0 8px rgba(157, 180, 192, 0.40);
+}
+.ameter.muted progress {
+  background-image: none; background-color: $amber; box-shadow: none; opacity: 0.75;
+}
+
+/* wifi - signal staircase (ascending bars, amber on a weak link) */
+.sigbars { min-height: 17px; }
+.sigbars .sig     { border-radius: 1px; }
+.sigbars .sig.on  { background-color: $aqua; box-shadow: 0 0 6px rgba(95, 211, 196, 0.5); }
+.sigbars .sig.off { background-color: $track; box-shadow: none; }
+.sigbars.weak .sig.on { background-color: $amber; box-shadow: 0 0 6px rgba(232, 178, 58, 0.5); }
+.aval.weak { color: $amber; }
+
+/* footer */
+.batt { font-family: "Fira Mono", monospace; font-size: 13px; color: $amber; }
+/* battery drawn from boxes: bordered body + level fill + terminal cap */
+.bat-body {
+  min-width: 22px; min-height: 12px; border-radius: 3px;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  padding: 1.5px;
+}
+.bat-fill { min-height: 6px; border-radius: 1.5px; }
+.bat-cap  {
+  min-width: 2px; min-height: 5px; margin-left: 1px;
+  border-radius: 0 2px 2px 0;
+  background-color: rgba(255, 255, 255, 0.55);
+}
+
+/* music */
+.music  { margin-top: 4px; }
+.cover  { min-width: 58px; min-height: 58px; border-radius: 8px;
+          background-color: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.22); }
+.cover image { border-radius: 8px; }
+.play   { font-size: 12px; color: $aqua; }
+.track  { font-size: 15px; color: $fg; }
+.artist { font-size: 12px; color: $muted; }
+.time   { font-family: "Fira Mono", monospace; font-size: 11px; color: $muted; }
+/* waveform seek bar: vertical segments, played portion lit with a soft
+   trailing glow, playhead segment a bright core wrapped in a layered halo */
+.wave    { min-height: 28px; padding: 4px 0; }
+.seg-on, .seg-off, .seg-head { border-radius: 2px; }
+/* played: lit aqua, each bar carries a gentle glow so the trail reads as one
+   continuous ribbon of light behind the playhead */
+.seg-on  {
+  background-color: $aqua;
+  box-shadow: 0 0 3px rgba(95, 211, 196, 0.55);
+}
+/* not yet played: dim, recessed track for contrast against the lit trail */
+.seg-off { background-color: rgba(255, 255, 255, 0.12); }
+/* playhead: near-white core with a three-layer aqua halo (the glowing point) */
+.seg-head {
+  background-color: #eafffb;
+  box-shadow: 0 0 4px 1px rgba(95, 211, 196, 1.0),
+              0 0 11px 3px rgba(95, 211, 196, 0.55),
+              0 0 18px 6px rgba(95, 211, 196, 0.25);
+}

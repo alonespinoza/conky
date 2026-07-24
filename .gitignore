@@ -1,0 +1,25 @@
+# Runtime logs
+*.log
+conky_output.log
+conky_cal.log
+conky_circles.log
+
+# Editor / backup artifacts
+*.backup
+*~
+*.swp
+
+# Local scratch / test files
+simple_cairo_test.lua
+cairo_rectangle.lua
+
+# Runtime-generated weather image dumps
+wx_now_*.png
+
+# AI assistant / tooling state — never upload
+.omc/
+.omc-workspace
+.claude/
+.aider*
+CLAUDE.md
+AGENTS.md

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Disk usage for the eww HUD as JSON, per mount: df's Use% (ceiling, matches
+# df / the file manager) plus human-readable used / free / total sizes.
+# LC_NUMERIC=C keeps any awk decimals JSON-valid under locales like es_CR.
+export LC_NUMERIC=C
+
+row(){  # $1 = mount path -> {"pct":N,"used":"..","free":"..","total":".."}
+  df -h --output=used,avail,size,pcent "$1" 2>/dev/null | awk 'NR==2{
+    gsub(/%/,"",$4);
+    printf "{\"pct\":%d,\"used\":\"%s\",\"free\":\"%s\",\"total\":\"%s\"}", $4+0, $1, $2, $3
+  }'
+}
+
+r=$(row /); h=$(row /home)
+[ -z "$r" ] && r='{"pct":0,"used":"-","free":"-","total":"-"}'
+[ -z "$h" ] && h='{"pct":0,"used":"-","free":"-","total":"-"}'
+printf '{"root":%s,"home":%s}' "$r" "$h"

@@ -1,15 +1,16 @@
 #!/bin/bash
-# Conky startup script with weather initialization
+# Desktop HUD startup script
+# NOTE: The live desktop HUD is eww (ElKowar's Wacky Widgets), not conky.
+# The old ~/.conky/*.lua conky widgets are an unused legacy variant.
+# This mirrors the login autostart chain (~/.config/autostart/eww-instrument.desktop).
 
-# Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Stop any leftover conky processes from the old setup
+pkill conky 2>/dev/null
 
-# Ensure weather data exists before starting Conky
-if [ ! -f "/tmp/conky_weather.txt" ]; then
-    echo "Initializing weather data..."
-    "$SCRIPT_DIR/update_weather.sh"
-fi
+# Restart eww cleanly so this script is safe to re-run
+eww kill 2>/dev/null
 
-# Start Conky
-echo "Starting Conky..."
-conky -c "$SCRIPT_DIR/main.lua"
+# Launch the eww HUD detached so it survives the launching shell exiting
+setsid ~/.config/eww/launch.sh >/dev/null 2>&1 < /dev/null &
+
+echo "eww HUD (Instrument) started."

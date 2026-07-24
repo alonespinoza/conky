@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# now-playing via playerctl (MPRIS) -> JSON, incl. a local album-art path
+# Force C numeric locale so awk's printf "%.1f" always emits a '.' decimal.
+# Under the session locale (e.g. es_CR) it emits a ',' which is invalid JSON
+# and makes eww fail to parse this object -> widget shows "Nothing playing".
+# (LC_NUMERIC only — not LC_ALL — to preserve UTF-8 in artist/title names.)
+export LC_NUMERIC=C
+fmt='{{status}}	{{artist}}	{{title}}	{{position}}	{{mpris:length}}	{{mpris:artUrl}}'
+line=$(playerctl metadata --format "$fmt" 2>/dev/null)
+if [ -z "$line" ]; then
+  echo '{"playing":false,"status":"","artist":"","title":"","posf":"","lenf":"","pct":0,"art":""}'
+  exit 0
+fi
+IFS=$'\t' read -r st ar ti pos len art <<< "$line"
+
+# resolve album art to a local file path for eww's image widget
+cover="/tmp/eww_cover.png"; urlfile="/tmp/eww_cover.url"; localart=""
+case "$art" in
+  file://*) localart="${art#file://}" ;;
+  http*)
+    if [ ! -f "$urlfile" ] || [ "$(cat "$urlfile" 2>/dev/null)" != "$art" ] || [ ! -f "$cover" ]; then
+      curl -s -m 6 -o "$cover" "$art" && printf '%s' "$art" > "$urlfile"
+    fi
+    [ -f "$cover" ] && localart="$cover" ;;
+esac
+
+posf=$(awk -v u="${pos:-0}" 'BEGIN{s=int(u/1000000); printf "%d:%02d", s/60, s%60}')
+lenf=$(awk -v u="${len:-0}" 'BEGIN{s=int(u/1000000); printf "%d:%02d", s/60, s%60}')
+pct=$(awk -v p="${pos:-0}" -v l="${len:-1}" 'BEGIN{ if(l<=0){print 0}else{printf "%.1f", p/l*100} }')
+esc(){ printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
+play=false; [ "$st" = "Playing" ] && play=true
+printf '{"playing":%s,"status":"%s","artist":"%s","title":"%s","posf":"%s","lenf":"%s","pct":%s,"art":"%s"}' \
+  "$play" "$st" "$(esc "$ar")" "$(esc "$ti")" "$posf" "$lenf" "$pct" "$(esc "$localart")"

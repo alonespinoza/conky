@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Volume + mic levels via PipeWire (wpctl) -> JSON for the eww HUD.
+# LC_NUMERIC=C so awk prints '.' decimals (es_CR would emit ',' -> bad JSON).
+export LC_NUMERIC=C
+
+read_pct() {  # $1 = wpctl target; echoes integer percent (0..100, capped)
+  local raw v
+  raw=$(wpctl get-volume "$1" 2>/dev/null)   # "Volume: 0.45 [MUTED]"
+  v=$(printf '%s' "$raw" | grep -oP 'Volume:\s*\K[0-9.]+')
+  awk -v v="${v:-0}" 'BEGIN{ p=v*100; if(p>100)p=100; printf "%.0f", p }'
+}
+is_muted() {  # $1 = wpctl target; echoes true/false
+  wpctl get-volume "$1" 2>/dev/null | grep -q MUTED && echo true || echo false
+}
+
+vol=$(read_pct  @DEFAULT_AUDIO_SINK@)
+vmut=$(is_muted @DEFAULT_AUDIO_SINK@)
+mic=$(read_pct  @DEFAULT_AUDIO_SOURCE@)
+mmut=$(is_muted @DEFAULT_AUDIO_SOURCE@)
+
+printf '{"vol":%s,"vmut":%s,"mic":%s,"mmut":%s}' \
+  "${vol:-0}" "$vmut" "${mic:-0}" "$mmut"
