@@ -182,7 +182,7 @@
   (box :class "bat" :space-evenly false :valign "center"
     (box :class "bat-body" :valign "center"
       (box :class "bat-fill" :halign "start" :hexpand false :valign "fill"
-           :style "min-width: ${round(pct * 0.16, 0)}px; background-color: ${col};"))
+           :style "min-width: ${round(pct * 0.22, 0)}px; background-color: ${col};"))
     (box :class "bat-cap" :valign "center")))
 
 ;; wifi signal staircase: four ascending bars lit up to the current strength,
