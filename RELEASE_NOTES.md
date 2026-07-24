@@ -1,5 +1,16 @@
 # Release Notes
 
+## v2.0.1 — Battery icon fill fix — 2026-07-24
+
+### Fixed
+- **Battery icon now fills completely at 100%.** The fill width was computed as
+  `pct * 0.16` (max 16px), but the icon body's content area is 22px wide in GTK
+  (padding and border sit *outside* `min-width`, not inside it), so a
+  fully-charged battery only filled ~73% of the icon. The multiplier is now
+  `0.22`, so 100% maps to the full 22px. (`eww/eww.yuck`)
+
+---
+
 ## v2.0.0 — Instrument HUD (eww) — 2026-07-24
 
 The desktop HUD moves from Conky to **eww** (Wayland layer-shell), and the whole
