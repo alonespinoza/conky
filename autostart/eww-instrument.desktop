@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=eww Instrument HUD
+Exec=/home/alonso/.config/eww/launch.sh
+X-GNOME-Autostart-enabled=true
+Terminal=false

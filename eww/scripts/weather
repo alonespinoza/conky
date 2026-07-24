@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Weather via Open-Meteo (free, no API key, elevation-aware) using the saved
+# location in ~/.conky/weather_location.conf; caches 15 min.
+# Outputs {temp, icon, desc, days[3]} for the eww HUD. Glyphs are monochrome
+# (Noto Sans Symbols2). LC_NUMERIC=C so python/printf parse the API's "19.9".
+export LC_NUMERIC=C
+cache=/tmp/eww_weather.json
+conf="$HOME/.conky/weather_location.conf"
+parser="$HOME/.config/eww/scripts/wxparse.py"
+
+age=99999
+[ -f "$cache" ] && age=$(( $(date +%s) - $(stat -c %Y "$cache" 2>/dev/null || echo 0) ))
+if [ ! -f "$cache" ] || [ "$age" -gt 900 ]; then
+  lat=$(grep -oP 'WEATHER_LAT="\K[^"]+' "$conf" 2>/dev/null)
+  lon=$(grep -oP 'WEATHER_LON="\K[^"]+' "$conf" 2>/dev/null)
+  name=$(grep -oP 'WEATHER_NAME="\K[^"]+' "$conf" 2>/dev/null)
+  if [ -n "$lat" ] && [ -n "$lon" ]; then
+    j=$(curl -s -m 8 "https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=3")
+    if [ -n "$j" ]; then
+      out=$(printf '%s' "$j" | python3 "$parser" "$name" 2>/dev/null)
+      [ -n "$out" ] && printf '%s' "$out" > "$cache"
+    fi
+  fi
+fi
+cat "$cache" 2>/dev/null || echo '{"temp":"--°","icon":"","desc":"","days":[]}'

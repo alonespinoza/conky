@@ -1,0 +1,289 @@
+;; ─── Instrument HUD (eww / Wayland layer-shell) ─────────────────────────────
+(defpoll temp   :interval "3s"   :initial "0"
+  "~/.config/eww/scripts/temp")
+(defpoll upt    :interval "30s"  :initial "…"
+  "~/.config/eww/scripts/uptime")
+(defpoll net    :interval "1s"
+  :initial '{"iface":"—","ssid":"","sig":0,"down":"0","du":" KB/s","up":"0","uu":" KB/s","up_hist":[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],"dn_hist":[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]}'
+  "~/.config/eww/scripts/net")
+(defpoll wthr   :interval "900s" :initial '{"temp":"--°","icon":"","desc":""}'
+  "~/.config/eww/scripts/weather")
+(defpoll music  :interval "1s"   :initial '{"playing":false,"title":"","artist":"","posf":"","lenf":"","pct":0}'
+  "~/.config/eww/scripts/music")
+(defpoll disks  :interval "30s"
+  :initial '{"root":{"pct":0,"used":"-","free":"-","total":"-"},"home":{"pct":0,"used":"-","free":"-","total":"-"}}'
+  "~/.config/eww/scripts/disks")
+(defpoll batt   :interval "10s"
+  :initial '{"pct":0,"state":"","glyph":"","foot":"…","col":"#9db4c0"}'
+  "~/.config/eww/scripts/battery")
+(defpoll audio  :interval "1s"
+  :initial '{"vol":0,"vmut":false,"mic":0,"mmut":false}'
+  "~/.config/eww/scripts/audio")
+(defpoll datestr :interval "300s" :initial ""
+  "date +'%a %d %b' | tr '[:lower:]' '[:upper:]'")
+
+(defwidget ring [value col lbl unit]
+  (box :orientation "v" :space-evenly false :spacing 5 :halign "center"
+    (box :class "ring-slot" :halign "center" :valign "center"
+      (overlay
+        (circular-progress :class "ring" :value {value <= 100 ? value : 100}
+                           :thickness 6 :start-at 75 :clockwise true
+                           :hexpand true :vexpand true
+                           :style "color: ${col};")
+        (label :class "ringnum" :text "${round(value,0)}${unit}")))
+    (label :class "lbl" :text lbl)))
+
+;; mirrored network spectrum: upload rises above the centerline, download drops
+;; below; newest sample on the right, heights come from the net script (1..18px).
+(defwidget spectrum [up dn]
+  (box :orientation "v" :space-evenly false :class "spectrum"
+    (box :class "spec-top" :space-evenly false :spacing 1 :valign "end"
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[0]}px; opacity: 0.28;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[1]}px; opacity: 0.30;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[2]}px; opacity: 0.32;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[3]}px; opacity: 0.34;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[4]}px; opacity: 0.35;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[5]}px; opacity: 0.37;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[6]}px; opacity: 0.39;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[7]}px; opacity: 0.41;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[8]}px; opacity: 0.43;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[9]}px; opacity: 0.45;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[10]}px; opacity: 0.46;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[11]}px; opacity: 0.48;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[12]}px; opacity: 0.50;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[13]}px; opacity: 0.52;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[14]}px; opacity: 0.54;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[15]}px; opacity: 0.56;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[16]}px; opacity: 0.58;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[17]}px; opacity: 0.59;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[18]}px; opacity: 0.61;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[19]}px; opacity: 0.63;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[20]}px; opacity: 0.65;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[21]}px; opacity: 0.67;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[22]}px; opacity: 0.69;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[23]}px; opacity: 0.70;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[24]}px; opacity: 0.72;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[25]}px; opacity: 0.74;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[26]}px; opacity: 0.76;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[27]}px; opacity: 0.78;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[28]}px; opacity: 0.80;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[29]}px; opacity: 0.82;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[30]}px; opacity: 0.83;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[31]}px; opacity: 0.85;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[32]}px; opacity: 0.87;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[33]}px; opacity: 0.89;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[34]}px; opacity: 0.91;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[35]}px; opacity: 0.93;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[36]}px; opacity: 0.94;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[37]}px; opacity: 0.96;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up" :style "min-height: ${up[38]}px; opacity: 0.98;")
+        (box :hexpand true :vexpand false :valign "end" :class "sb-up sb-head-up" :style "min-height: ${up[39]}px; opacity: 1.00;")
+    )
+    (box :class "spec-mid")
+    (box :class "spec-bot" :space-evenly false :spacing 1 :valign "start"
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[0]}px; opacity: 0.28;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[1]}px; opacity: 0.30;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[2]}px; opacity: 0.32;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[3]}px; opacity: 0.34;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[4]}px; opacity: 0.35;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[5]}px; opacity: 0.37;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[6]}px; opacity: 0.39;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[7]}px; opacity: 0.41;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[8]}px; opacity: 0.43;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[9]}px; opacity: 0.45;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[10]}px; opacity: 0.46;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[11]}px; opacity: 0.48;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[12]}px; opacity: 0.50;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[13]}px; opacity: 0.52;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[14]}px; opacity: 0.54;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[15]}px; opacity: 0.56;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[16]}px; opacity: 0.58;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[17]}px; opacity: 0.59;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[18]}px; opacity: 0.61;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[19]}px; opacity: 0.63;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[20]}px; opacity: 0.65;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[21]}px; opacity: 0.67;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[22]}px; opacity: 0.69;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[23]}px; opacity: 0.70;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[24]}px; opacity: 0.72;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[25]}px; opacity: 0.74;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[26]}px; opacity: 0.76;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[27]}px; opacity: 0.78;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[28]}px; opacity: 0.80;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[29]}px; opacity: 0.82;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[30]}px; opacity: 0.83;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[31]}px; opacity: 0.85;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[32]}px; opacity: 0.87;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[33]}px; opacity: 0.89;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[34]}px; opacity: 0.91;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[35]}px; opacity: 0.93;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[36]}px; opacity: 0.94;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[37]}px; opacity: 0.96;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn" :style "min-height: ${dn[38]}px; opacity: 0.98;")
+        (box :hexpand true :vexpand false :valign "start" :class "sb-dn sb-head-dn" :style "min-height: ${dn[39]}px; opacity: 1.00;")
+    )))
+
+;; capacity bar: mount + label on top, gradient meter, used/free beneath
+(defwidget diskrow [name label val used free]
+  (box :orientation "v" :space-evenly false :spacing 5
+    (box :space-evenly false :valign "baseline" :spacing 8
+      (label :class "dname" :text name)
+      (label :class "dlabel" :hexpand true :halign "start" :text label)
+      (label :class "dpct" :halign "end" :text "${round(val,0)}%"))
+    (progress :class "dmeter" :hexpand true :value val :orientation "h")
+    (label :class "dfree" :halign "start" :text "${used} used · ${free} free")))
+
+(defwidget wavebar [pct]
+  (box :class "wave" :space-evenly false :spacing 2 :hexpand true :valign "center"
+        (box :valign "center" :vexpand false :class {pct >= 2.5000 ? "seg-on" : (pct >= 0.0000 ? "seg-head" : "seg-off")} :style "min-height: 11px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 5.0000 ? "seg-on" : (pct >= 2.5000 ? "seg-head" : "seg-off")} :style "min-height: 11px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 7.5000 ? "seg-on" : (pct >= 5.0000 ? "seg-head" : "seg-off")} :style "min-height: 10px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 10.0000 ? "seg-on" : (pct >= 7.5000 ? "seg-head" : "seg-off")} :style "min-height: 10px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 12.5000 ? "seg-on" : (pct >= 10.0000 ? "seg-head" : "seg-off")} :style "min-height: 4px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 15.0000 ? "seg-on" : (pct >= 12.5000 ? "seg-head" : "seg-off")} :style "min-height: 4px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 17.5000 ? "seg-on" : (pct >= 15.0000 ? "seg-head" : "seg-off")} :style "min-height: 7px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 20.0000 ? "seg-on" : (pct >= 17.5000 ? "seg-head" : "seg-off")} :style "min-height: 7px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 22.5000 ? "seg-on" : (pct >= 20.0000 ? "seg-head" : "seg-off")} :style "min-height: 13px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 25.0000 ? "seg-on" : (pct >= 22.5000 ? "seg-head" : "seg-off")} :style "min-height: 12px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 27.5000 ? "seg-on" : (pct >= 25.0000 ? "seg-head" : "seg-off")} :style "min-height: 7px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 30.0000 ? "seg-on" : (pct >= 27.5000 ? "seg-head" : "seg-off")} :style "min-height: 9px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 32.5000 ? "seg-on" : (pct >= 30.0000 ? "seg-head" : "seg-off")} :style "min-height: 6px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 35.0000 ? "seg-on" : (pct >= 32.5000 ? "seg-head" : "seg-off")} :style "min-height: 9px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 37.5000 ? "seg-on" : (pct >= 35.0000 ? "seg-head" : "seg-off")} :style "min-height: 18px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 40.0000 ? "seg-on" : (pct >= 37.5000 ? "seg-head" : "seg-off")} :style "min-height: 16px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 42.5000 ? "seg-on" : (pct >= 40.0000 ? "seg-head" : "seg-off")} :style "min-height: 18px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 45.0000 ? "seg-on" : (pct >= 42.5000 ? "seg-head" : "seg-off")} :style "min-height: 16px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 47.5000 ? "seg-on" : (pct >= 45.0000 ? "seg-head" : "seg-off")} :style "min-height: 7px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 50.0000 ? "seg-on" : (pct >= 47.5000 ? "seg-head" : "seg-off")} :style "min-height: 10px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 52.5000 ? "seg-on" : (pct >= 50.0000 ? "seg-head" : "seg-off")} :style "min-height: 10px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 55.0000 ? "seg-on" : (pct >= 52.5000 ? "seg-head" : "seg-off")} :style "min-height: 11px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 57.5000 ? "seg-on" : (pct >= 55.0000 ? "seg-head" : "seg-off")} :style "min-height: 17px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 60.0000 ? "seg-on" : (pct >= 57.5000 ? "seg-head" : "seg-off")} :style "min-height: 11px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 62.5000 ? "seg-on" : (pct >= 60.0000 ? "seg-head" : "seg-off")} :style "min-height: 8px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 65.0000 ? "seg-on" : (pct >= 62.5000 ? "seg-head" : "seg-off")} :style "min-height: 7px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 67.5000 ? "seg-on" : (pct >= 65.0000 ? "seg-head" : "seg-off")} :style "min-height: 3px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 70.0000 ? "seg-on" : (pct >= 67.5000 ? "seg-head" : "seg-off")} :style "min-height: 8px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 72.5000 ? "seg-on" : (pct >= 70.0000 ? "seg-head" : "seg-off")} :style "min-height: 13px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 75.0000 ? "seg-on" : (pct >= 72.5000 ? "seg-head" : "seg-off")} :style "min-height: 13px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 77.5000 ? "seg-on" : (pct >= 75.0000 ? "seg-head" : "seg-off")} :style "min-height: 16px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 80.0000 ? "seg-on" : (pct >= 77.5000 ? "seg-head" : "seg-off")} :style "min-height: 11px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 82.5000 ? "seg-on" : (pct >= 80.0000 ? "seg-head" : "seg-off")} :style "min-height: 8px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 85.0000 ? "seg-on" : (pct >= 82.5000 ? "seg-head" : "seg-off")} :style "min-height: 10px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 87.5000 ? "seg-on" : (pct >= 85.0000 ? "seg-head" : "seg-off")} :style "min-height: 8px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 90.0000 ? "seg-on" : (pct >= 87.5000 ? "seg-head" : "seg-off")} :style "min-height: 12px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 92.5000 ? "seg-on" : (pct >= 90.0000 ? "seg-head" : "seg-off")} :style "min-height: 14px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 95.0000 ? "seg-on" : (pct >= 92.5000 ? "seg-head" : "seg-off")} :style "min-height: 9px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 97.5000 ? "seg-on" : (pct >= 95.0000 ? "seg-head" : "seg-off")} :style "min-height: 8px; min-width: 3px;")
+        (box :valign "center" :vexpand false :class {pct >= 100.0000 ? "seg-on" : (pct >= 97.5000 ? "seg-head" : "seg-off")} :style "min-height: 5px; min-width: 3px;")))
+
+;; small battery glyph drawn from boxes: bordered body with a level fill sized
+;; by pct (0..16px inner), plus a terminal cap. Fill color passed in (batt.col).
+(defwidget batticon [pct col]
+  (box :class "bat" :space-evenly false :valign "center"
+    (box :class "bat-body" :valign "center"
+      (box :class "bat-fill" :halign "start" :hexpand false :valign "fill"
+           :style "min-width: ${round(pct * 0.16, 0)}px; background-color: ${col};"))
+    (box :class "bat-cap" :valign "center")))
+
+;; wifi signal staircase: four ascending bars lit up to the current strength,
+;; turning amber on a weak link (same "amber = attention" cue as low battery).
+(defwidget signalbars [sig]
+  (box :class {sig < 35 ? "sigbars weak" : "sigbars"} :space-evenly false :spacing 2 :valign "center"
+    (box :valign "end" :class {sig >= 15 ? "sig on" : "sig off"} :style "min-height: 5px;  min-width: 3px;")
+    (box :valign "end" :class {sig >= 40 ? "sig on" : "sig off"} :style "min-height: 9px;  min-width: 3px;")
+    (box :valign "end" :class {sig >= 60 ? "sig on" : "sig off"} :style "min-height: 13px; min-width: 3px;")
+    (box :valign "end" :class {sig >= 80 ? "sig on" : "sig off"} :style "min-height: 17px; min-width: 3px;")))
+
+(defwidget hud []
+  (box :class "card" :orientation "v" :space-evenly false :spacing 15
+    ;; header: clock + weather
+    (box :space-evenly false
+      (box :orientation "v" :space-evenly false :hexpand true :halign "start"
+        (box :space-evenly false :spacing 5 :valign "baseline"
+          (label :class "clock" :text {formattime(EWW_TIME, "%I:%M")})
+          (label :class "ampm"  :text {formattime(EWW_TIME, "%p")}))
+        (label :class "meta" :halign "start" :text datestr))
+      (box :orientation "v" :space-evenly false :halign "end" :valign "start"
+        (box :space-evenly false :spacing 8 :halign "end" :valign "center"
+          (label :class "wicon" :text {wthr.icon})
+          (label :class "deg" :halign "end" :text {wthr.temp}))
+        (label :class "meta" :halign "end" :text {wthr.desc})))
+    ;; 3-day forecast strip
+    (box :class "forecast" :space-evenly true :halign "fill"
+      (for day in {wthr.days}
+        (box :orientation "v" :space-evenly false :spacing 1 :halign "center"
+          (label :class "fc-day" :text {day.d})
+          (label :class "fc-ic"  :text {day.ic})
+          (box :space-evenly false :spacing 5 :halign "center"
+            (label :class "fc-hi" :text "${day.hi}°")
+            (label :class "fc-lo" :text "${day.lo}°")))))
+    ;; rings
+    (box :space-evenly true :halign "fill"
+      (ring :value {EWW_CPU.avg}            :col "#5fd3c4" :lbl "CPU"  :unit "%")
+      (ring :value {EWW_RAM.used_mem_perc}  :col "#9db4c0" :lbl "RAM"  :unit "%")
+      (ring :value {temp}                   :col "#e8b23a" :lbl "TEMP" :unit "°"))
+    ;; network
+    (box :orientation "v" :space-evenly false :spacing 8
+      (box :space-evenly false :valign "center"
+        (label :class "sec-lbl" :hexpand true :halign "start" :text "NET")
+        (box :space-evenly false :halign "end" :valign "center" :spacing 8
+          (label :class "sec-val" :limit-width 20 :show-truncated true
+                 :text {net.ssid != "" ? net.ssid : net.iface})
+          (box :visible {net.ssid != ""} :valign "center"
+            (signalbars :sig {net.sig}))))
+      (spectrum :up {net.up_hist} :dn {net.dn_hist})
+      (box :space-evenly false :class "netrates"
+        (box :hexpand true :halign "start" :space-evenly false :spacing 6 :valign "center"
+          (label :class "arrow up" :text "↑")
+          (label :class "rate" :text {net.up}) (label :class "unit" :text {net.uu}))
+        (box :hexpand true :halign "end" :space-evenly false :spacing 6 :valign "center"
+          (label :class "arrow dn" :text "↓")
+          (label :class "rate" :text {net.down}) (label :class "unit" :text {net.du}))))
+    ;; disks
+    (box :orientation "v" :space-evenly false :spacing 9
+      (diskrow :name "/" :label "root" :val {disks.root.pct} :used {disks.root.used} :free {disks.root.free})
+      (diskrow :name "~" :label "home" :val {disks.home.pct} :used {disks.home.used} :free {disks.home.free}))
+    ;; audio: volume + mic meters
+    (box :orientation "v" :space-evenly false :spacing 9 :class "audio"
+      (label :class "sec-lbl" :halign "start" :text "AUDIO")
+      (box :space-evenly false :spacing 10 :valign "center"
+        (label :class "arow" :text "VOL")
+        (progress :class {audio.vmut ? "ameter muted" : "ameter"} :hexpand true :orientation "h"
+                  :value {audio.vol > 100 ? 100 : audio.vol})
+        (label :class "aval" :halign "end" :text {audio.vmut ? "muted" : "${audio.vol}%"}))
+      (box :space-evenly false :spacing 10 :valign "center"
+        (label :class "arow" :text "MIC")
+        (progress :class {audio.mmut ? "ameter mic muted" : "ameter mic"} :hexpand true :orientation "h"
+                  :value {audio.mic > 100 ? 100 : audio.mic})
+        (label :class "aval" :halign "end" :text {audio.mmut ? "muted" : "${audio.mic}%"})))
+    ;; footer: uptime + a small battery icon
+    (box :space-evenly false :valign "center"
+      (label :class "meta" :hexpand true :halign "start" :text "up ${upt}")
+      (box :halign "end" :space-evenly false :spacing 7 :valign "center"
+        (batticon :pct {batt.pct} :col {batt.col})
+        (label :class "batt" :style "color: ${batt.col};" :text "${batt.pct}%")))
+    ;; music
+    (box :orientation "v" :space-evenly false :spacing 8 :class "music"
+      (box :space-evenly false
+        (label :class "sec-lbl" :hexpand true :halign "start" :text "NOW PLAYING")
+        (label :class "play" :visible {music.playing} :text "▶"))
+      (box :space-evenly false :spacing 13 :valign "center"
+        (box :class "cover" :valign "start"
+          (image :visible {music.art != ""} :path {music.art} :image-width 58 :image-height 58))
+        (box :orientation "v" :space-evenly false :hexpand true :spacing 4 :valign "center"
+          (label :class "track" :halign "start" :limit-width 26 :show-truncated true
+                 :text {music.playing ? music.title : "Nothing playing"})
+          (label :class "artist" :halign "start" :limit-width 32 :visible {music.playing}
+                 :text {music.artist})
+          (box :space-evenly false :visible {music.playing} :spacing 9 :valign "center"
+            (wavebar :pct {music.pct})
+            (label :class "time" :text "${music.posf} / ${music.lenf}")))))))
+
+(defwindow instrument
+  :monitor 0
+  :geometry (geometry :x "24px" :y "48px" :anchor "top left" :width "410px")
+  ;; "bottom" (above the wallpaper layer, below windows) so changing the COSMIC
+  ;; wallpaper doesn't clobber the HUD surface like "bg" (same layer as cosmic-bg).
+  :stacking "bottom"
+  :focusable false
+  (hud))

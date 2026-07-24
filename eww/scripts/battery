@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Battery detail via upower -> JSON for the eww HUD.
+# LC_NUMERIC=C so any decimal we print uses '.' (es_CR locale would emit ','
+# -> invalid JSON -> widget blanks). Emits pct + a dynamic ring color and a
+# short footer string (charge state / time remaining).
+export LC_NUMERIC=C
+dev=$(upower -e 2>/dev/null | grep -m1 -E 'battery_BAT')
+if [ -z "$dev" ]; then
+  echo '{"pct":0,"state":"","glyph":"","foot":"no battery","col":"#9db4c0"}'
+  exit 0
+fi
+info=$(upower -i "$dev" 2>/dev/null)
+pct=$(printf '%s' "$info"  | grep -oP 'percentage:\s*\K[0-9]+'); pct=${pct:-0}
+state=$(printf '%s' "$info" | grep -oP 'state:\s*\K\S+')
+tte=$(printf '%s' "$info"  | grep -oP 'time to empty:\s*\K.+' | head -1)
+ttf=$(printf '%s' "$info"  | grep -oP 'time to full:\s*\K.+'  | head -1)
+
+glyph=""; foot=""; col="#9db4c0"
+case "$state" in
+  charging)      glyph="+"; foot="chg ${ttf:-}";  col="#5fd3c4" ;;
+  discharging)   glyph="";  foot="${tte:+${tte} left}"
+                 [ -z "$foot" ] && foot="on battery"
+                 if [ "$pct" -le 20 ]; then col="#e8b23a"; else col="#9db4c0"; fi ;;
+  fully-charged) glyph="="; foot="full"; col="#5fd3c4" ;;
+  *)             foot="$state" ;;
+esac
+printf '{"pct":%s,"state":"%s","glyph":"%s","foot":"%s","col":"%s"}' \
+  "$pct" "$state" "$glyph" "$foot" "$col"

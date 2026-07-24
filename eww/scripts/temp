@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# best-effort CPU package temperature in whole °C
+for h in /sys/class/hwmon/hwmon*; do
+  n=$(cat "$h/name" 2>/dev/null)
+  case "$n" in
+    coretemp|k10temp|zenpower|cpu_thermal)
+      for f in "$h"/temp1_input "$h"/temp*_input; do
+        [ -f "$f" ] && { awk '{printf "%d", $1/1000}' "$f"; exit 0; }
+      done ;;
+  esac
+done
+awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo 0

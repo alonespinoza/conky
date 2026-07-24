@@ -5,5 +5,5 @@
 -- Get home directory
 local home = os.getenv('HOME') or '/home/alonso'
 
--- Load the working Conky Bars configuration by default
-dofile(home .. '/.conky/main_bars.lua')
+-- Load the Instrument HUD (Option A) by default
+dofile(home .. '/.conky/instrument.lua')
